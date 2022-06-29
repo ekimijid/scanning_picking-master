@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="1" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="Company_pkey"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="movement_type"/>
+            </not>
+        </preConditions>
+        <createTable tableName="movement_type">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="Movement_type_pkey"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="User_pkey"/>
+            </column>
+            <column name="username" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="int">
+                <constraints nullable="true"></constraints>
+            </column>
+            <column name="movement_type_id" type="int">
+                <constraints nullable="true"></constraints>
+            </column>
+        </createTable>
+        <!--        company fk-->
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="company_id" constraintName="company_id_fk"
+                                 referencedTableName="company"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <!--        movement_type fk-->
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="movement_type_id"
+                                 constraintName="movement_type_id_fk"
+                                 referencedTableName="movement_type"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+    </changeSet>
+    <changeSet id="4" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product"/>
+            </not>
+        </preConditions>
+        <createTable tableName="product">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="Product_pkey"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="barcode" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="picking"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="picking">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="Picking_pkey"/>
+            </column>
+            <column name="company_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wms_site" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wms_warehouse" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UOM" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="text" defaultValue="To Do">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="picking" constraintName="picking_product_id_fkey"
+                                 baseColumnNames="product_id" referencedTableName="product"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="picking" baseColumnNames="company_id" constraintName="company_id_fk"
+                                 referencedTableName="company"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+    </changeSet>
+    <changeSet id="6" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="movement"/>
+            </not>
+        </preConditions>
+        <createTable tableName="movement">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="Movement_pkey"/>
+            </column>
+            <column name="company_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wms_site" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wms_warehouse" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="movement_type_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="picking_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UOM" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_from" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_to" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="in_progress_timestamp" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="in_progress_user_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="text" defaultValue="To Do">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="movement" constraintName="movement_product_id_fkey"
+                                 baseColumnNames="product_id" referencedTableName="product"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="movement" baseColumnNames="company_id" constraintName="company_id_fk"
+                                 referencedTableName="company"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="movement" constraintName="movement_in_progress_user_id_fkey"
+                                 baseColumnNames="in_progress_user_id" referencedTableName="user"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="movement" constraintName="movement_picking_id_fkey"
+                                 baseColumnNames="picking_id" referencedTableName="picking"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="movement" constraintName="movement_movement_type_id_fkey"
+                                 baseColumnNames="movement_type_id" referencedTableName="movement_type"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+    </changeSet>
+    <changeSet id="7" author="FERDON">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="damage_report"/>
+            </not>
+        </preConditions>
+        <createTable tableName="damage_report">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" primaryKeyName="Damage_report_pkey"/>
+            </column>
+            <!--            movement id-->
+            <column name="movement_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <!--            user id-->
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <!--            description-->
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <!--            shippable-->
+            <column name="shippable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <!--            image-->
+            <column name="image" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <!--            created at-->
+            <column name="created_at" defaultValueComputed="CURRENT_TIMESTAMP" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="damage_report" baseColumnNames="movement_id"
+                                 constraintName="movement_id_fkey" referencedTableName="movement"
+                                 referencedColumnNames="id"></addForeignKeyConstraint>
+        <addForeignKeyConstraint baseTableName="damage_report" baseColumnNames="user_id" constraintName="user_id_fkey"
+                                 referencedTableName="user" referencedColumnNames="id"></addForeignKeyConstraint>
+
+    </changeSet>
+
+
+</databaseChangeLog>

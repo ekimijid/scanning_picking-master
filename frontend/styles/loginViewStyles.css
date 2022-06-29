@@ -1,0 +1,14 @@
+vaadin-button{
+    width: max-content !important;
+    background-color: #DB3333 !important;
+    color: white !important;
+}
+[part="form-title"] {
+    display: none !important;
+}
+[part="form"]{
+    width: 100% !important;
+}
+vaadin-notification-card{
+    width: max-content !important;
+}
